@@ -1,1 +1,40 @@
-/home/pi/windSounds.txt
+## Allan Giddy - wind-controlled sample playback (2020)
+## Code by Elias Berkhout
+
+# input comes in the form of reed switches from a wind turbine
+# direction variable, from 0-15, represents wind direction
+# 0 = N, 1 = NNE, 2 = NE, etc
+# each direction has its own looping sample, which will
+# play until a new direction is received
+# values are received from a Python script reading the GPIO pins
+
+# first, create a path to the folder containing the relevant samples
+# for now this directs to the default sonic pi samples
+# TO-DO: mkdir for samples on the desktop
+samps = "/opt/sonic-pi/etc/samples"
+
+# samps = "/home/pi/Desktop/turbine/samples"
+
+# create direction variable to store wind direction
+# declare that it is sync'd to received OSC messages
+direction = sync "/osc*/play"
+
+# live loop receives OSC messages and updates direction variable when a new value is received
+live_loop :dir do
+  direction = sync "/osc*/play"
+end
+
+# second live loop to play audio
+# the value of the direction variable controls which sample is selected
+# the selected sample will loop until a new message is received
+live_loop :listen do
+  # store the length of the currently selected sample
+  s_length = sample_duration samps, direction
+  
+  # print the current direction value (0-15)
+  puts direction
+  
+  # play the sample from the samps path, [direction] index, ie. if direction == 0, play sample 0 in the directory
+  sample samps, direction
+  sleep s_length
+end

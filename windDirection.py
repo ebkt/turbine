@@ -50,6 +50,7 @@ def msg(dir):
     message.add_arg(dir, arg_type = 'i')                                         # add the direction argument to the message
     message = message.build()                                                   # build the message
     sender.send(message)                                                       # send it
+    print("message sent: ", dir)
     
 if __name__ == "__main__":
     try:
@@ -73,6 +74,6 @@ if __name__ == "__main__":
             elif NNW.is_pressed: msg(15); print('NNW')
             #print(val)
             #msg(val)
-            sleep(1)
+            sleep(2)
     except ( KeyboardInterrupt ):
         exit()
