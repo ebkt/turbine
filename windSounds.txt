@@ -6,14 +6,16 @@
 # 0 = N, 1 = NNE, 2 = NE, etc
 # each direction has its own looping sample, which will
 # play until a new direction is received
-# values are received from a Python script reading the GPIO pins
+# values are received from a Python script reading the Pi's GPIO
 
 # first, create a path to the folder containing the relevant samples
-# for now this directs to the default sonic pi samples
-# TO-DO: mkdir for samples on the desktop
-samps = "/opt/sonic-pi/etc/samples"
+# for testing this directs to the default sonic pi samples
+# samps = "/opt/sonic-pi/etc/samples"
 
-# samps = "/home/pi/Desktop/turbine/samples"
+# this is the path to the folder contained within the turbine folder
+# which is on the desktop. The samples folder **MUST** contain 16 samples,
+# otherwise certain wind directions will not have associated audio files
+samps = "/home/pi/Desktop/turbine/samples"
 
 # create direction variable to store wind direction
 # declare that it is sync'd to received OSC messages
@@ -28,7 +30,7 @@ end
 # the value of the direction variable controls which sample is selected
 # the selected sample will loop until a new message is received
 live_loop :listen do
-  # store the length of the currently selected sample
+  # create a variable and store the length of the currently selected sample
   s_length = sample_duration samps, direction
   
   # print the current direction value (0-15)
@@ -36,5 +38,7 @@ live_loop :listen do
   
   # play the sample from the samps path, [direction] index, ie. if direction == 0, play sample 0 in the directory
   sample samps, direction
+  # sleep for the duration of the sample
   sleep s_length
+  
 end
